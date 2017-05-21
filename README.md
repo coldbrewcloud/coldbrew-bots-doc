@@ -31,9 +31,9 @@ Each session will include these data attributes:
 
 ### Message Pulling vs. Webhook Pushes
 
-In Coldbrew Bots API, you "pull" the messages, whereas the Facebook Messenger Platform "pushes" the messages to your webhook endpoints. There are pros and cons in either model, but, our pulling model has couple advantages:
+In Coldbrew Bots API, you "pull" the messages, whereas the Facebook Messenger Platform "pushes" the messages to your webhook endpoints. Both have pros and cons, but, the pulling model has the following advantages:
 
-1. It makes local bot development simpler. You don't need network tunneling tools (such as [ngrok](https://ngrok.com/)) because your bot applicaiton does not receive any incoming webhook calls directly. Coldbrew Bots API will receive them and store the incoming messages so your bot application can retrieve them later.
+1. It makes local bot app development simpler. you don't need the network tunneling tools (such as [ngrok](https://ngrok.com/)) because your bot applicaiton does not receive incoming webhook calls directly. Coldbrew Bots API will receive and store the webhook calls so your bot app can retrieve (pull) the messages later.
 
-2. asdfsadfasdf
+2. You bot app does not have to be a web server accepting HTTP requests. It makes the bot code and deployment structure much simpler. e.g. no inbound connections, no need for load balancers.
 
