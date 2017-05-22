@@ -20,7 +20,25 @@ Authorization: Bearer <your_api_token>
 GET https://bots.coldbrewcloud.com/bots/{bot_id}/messages
 ```
 
-This endpoint will return status `200` with a Message
+Parameters:
+
+- `bot_id`: bot ID
+- _(no HTTP request body)_
+
+HTTP Response:
+
+- `200`: response body will contain [ReceiveResponse](#receiveresponse).
+- `404`: no messages received
+- `400`: invalid bot ID
+- `403`: permission error (most likely authorization issue)
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/messages"
+```
 
 ### Send a Message
 
@@ -28,8 +46,52 @@ This endpoint will return status `200` with a Message
 POST https://bots.coldbrewcloud.com/bots/{bot_id}/messages
 ```
 
-Request
+Parameters:
 
+- `{bot_id}`: bot ID
+- HTTP request body: [SendRequest](#sendrequest)
+
+HTTP Response:
+
+- `200`: message was sent successfully
+- `400`: invalid bot or session ID
+- `403`: permission error (most likely authorization issue)
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    -XPOST -d '{"session_id": "841ba10b12d24427aa3b96ebb3a2ba9d","contents": [{"text": "hello there!"}]}' \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/messages"
+```
+
+### Get User Profile
+
+```
+GET https://bots.coldbrewcloud.com/bots/{bot_id}/users/{user_id}
+```
+
+Parameters:
+
+- `bot_id`: bot ID
+- `user_id`: user ID. You normally get the user ID from `sender_id` of [ReceiveResponse](#receiveresponse).
+- _(no HTTP request body)_
+
+HTTP Response:
+
+- `200`: response body will contain [GetUserResponse](#getuserresponse).
+- `404`: no user found
+- `400`: invalid bot ID
+- `403`: permission error (most likely authorization issue)
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/users/77bef519d3474ecda828a124dd1426d5"
+```
 
 ## Models
 
