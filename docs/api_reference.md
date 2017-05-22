@@ -91,7 +91,7 @@ curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
     "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/users/77bef519d3474ecda828a124dd1426d5"
 ```
 
-## Models
+## Data Models
 
 ### ReceiveResponse
 
