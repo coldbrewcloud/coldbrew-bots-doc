@@ -1,6 +1,7 @@
 site_name: Coldbrew Bots
 pages:
     - Home: index.md
+    - Facebook Messenger Setup: bot_fm_setup.md
     - API Reference: api_reference.md
     - Flow Engine: flow.md
     - Pricing: pricing.md

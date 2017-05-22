@@ -417,7 +417,7 @@ Example:
 - `kv`: _(optional)_ key-values that need to be updated or deleted (value set to `null`). Keys not included in this map will not be updated or deleted.
 - `modify_index` _(optional)_ if set, the session update request will succeed only if the current session modify index matches this value. Otherwise all send request will fail with `409 Conflict` status. You can use this to perform "Compare-and-Swap" style operations.
 
-See [Sessions](home.md#sessions) for more information.
+See [Sessions](index.md#sessions) for more information.
 
 ### SendResponse
 
