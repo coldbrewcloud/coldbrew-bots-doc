@@ -4,75 +4,62 @@ Coldbrew Bots is a chat bot development platform that simplifies
 
 ## Features
 
-- Cross platform: currently [Facebook Messenger](https://developers.facebook.com/docs/messenger-platform) and [Slack](https://slack.com/apps/category/At0MQP5BEF-bots) bots available
-- [Session](#sessions)-based messaging
-- [Flow Engine](flow.md): Programmable bot engine
-- Seamless [Natural Language Processing](https://wit.ai/) integration
-- Painless [Google Analytics](https://analytics.google.com/) integration
-- [Interactive API Bot][apibotlink]: Tutorials, dashboards,
+- Cross Platform: [Facebook Messenger](https://developers.facebook.com/docs/messenger-platform) and [Slack](https://slack.com/apps/category/At0MQP5BEF-bots) bots available _(more to come)_
+- Semantic Chat Bots: [session](#sessions)-based messaging and [natural language processing](https://wit.ai/) integration
+- [Flow Engine](flow.md): programmable bot interaction engine
+- [Google Analytics](https://analytics.google.com/): painless integration to map sessions, states, and events to GA
 
-_NOTE: Coldbrew Bots is currently the Beta release. And, some features are currently available to the invited developers only._
+_NOTE: Coldbrew Bots is currently the Beta release. And, some features are currently open to the invited developers only._
 
-## Interactive API Bot
+## API Bot
 
-In the current release, we provide
+[API Bot][apibotlink] is our own Facebook Messenger chat bot we created using [Coldbrew Bots API](api_reference.md) and [Flow Engine](flow.md). At first it was built as a demo for Coldbrew Bots, but, we soon realized that we could use it to serve our developers _(like yourself)_!
 
-This [API Bot][apibotlink] itself was built on [Coldbrew Bots API](api_reference.md) and [Flow Engine](flow.md).
-
-<img src="https://files.coldbrewcloud.com/9feb52fba21e4388970d7d293e21aca2.PNG" width="200">
+With [API Bot][apibotlink], you can do things like this:
 
 - Create and manage your bots
 - Manage your API tokens
-- Access Bot Store (coming soon)
-- Try interactive tutorials
-- Share feedback with us
+- Access Bot Store _(coming soon)_
+- Take interactive tutorials
+- Send feedback to us
+
+<img src="https://files.coldbrewcloud.com/9feb52fba21e4388970d7d293e21aca2.PNG" width="200">
 
 [Try It Now!][apibotlink] _(Best viewed in Messenger mobile app)_
 
-## How It Works
+_NOTE: Actually you will have to use our API Bot no matter what, because we didn't create a web site (or a mobile app) that serves the functionalities above. Sorry._
 
-This is the typical workflow:
+## Getting Started
 
-1. Create a Bot using [API Bot][apibotlink]
-2. Connect the bot to your Facebook App and Page
-3. Start receiving and sending messages via [Coldbrew Bots API](api_reference.md)
+We recommend you to try the tutorial using [API Bot][apibotlink], but, this is the typical steps to get started:
 
-Once you create your bot via Coldbrew Bots, you can easily receive and send the messages with your end users. You will use these 2 API endpoints mostly:
-
-- `GET https://bots.coldbrewcloud.com/bots/{bot_id}/messages` to receive messages
-- `POST https://bots.coldbrewcloud.com/bots/{bot_id}/messages` to send messages
-
-When using these endpoints, you must include your API token in `Authorization` HTTP header. An example curl command to receive a message will look like this:
-
-```bash
-curl -H "Authorization: Bearer <your_api_token>" "https://bots.coldbrewcloud.com/bots/<your_bot_id>/messages"
-```
-
-And this endpoint will return either a message (see `ReceiveResponse` model in [API Reference](api_reference.md)) or `404 Not Found` status if there's no message received.
+1. Create a new Coldbrew Bots bot using [API Bot][apibotlink].
+2. Configure your Facebook App to connect the bot (e.g. Webhooks, Page Access Token).
+3. Start receiving and sending messages via [Coldbrew Bots REST API](api_reference.md).
 
 See [API Reference](api_reference.md) for more information.
 
 ## Sessions
 
-All messages received/sent via Coldbrew Bots API will have a session ID. Your bot will most likely interact with multiple end users at the same time. The concept of session lets you easily maintain isolated conversational status with different end users (or group of end users).
+Your bot is supposed to interact with multiple end users _(or multiple groups of users)_ simultaneously. And, from the end user's perspective, they expect their conversation with the bot is completely private and isolated from other conversations of the bot.
 
-Each session will include these data attributes:
+To make such isolation simpler, Coldbrew Bots API provides sessions for all conversations. Whenever an end user initiates the conversation with your bot, Coldbrew Bots API will create a new session and assign the end user to that session. And, all messages that you receive and send through Coldbrew Bots API will use that session to maintain private and independent conversation states with the end user.
 
-- Session ID: a unique ID for the session
-- Session State: you can use the session state (string) to maintain different stages or phases of the conversation with different end users.
-- Key-Value Storage: you can use session KV store to store information (e.g. answers to questions)
-- Modify Index: whenever you modify the session, this index will increment. And you can use this modify to perform compare-and-swap operations. But that's optional.
+_NOTE: In the current release, we support 1-to-1 session type only, but, we're working to add group and individual-in-group session types._
 
-## Other Topics
+Each session has the following attributes:
 
+- **ID**: a unique string ID of the session
+- **State**: a session can have a state at a time. It's up to you how to utilize this session state, but, typical use cases would be to track of conversation phase of individual end users, or, to limit the possible interaction scenarios with the end users. Session state can be modified whenever you send a message through Coldbrew Bots API. (See [SessionUpdate](api_reference.md#sessionupdate) and [SendRequest](api_reference.md#sendrequest).)
+- **Key-Value Storage**: you can store multiple string-based key value pairs in the session. All data in the session storage is private and permanent _(unless you delete them)_. Session data can be updated or deleted using [SessionUpdate](api_reference.md#sessionupdate) in [SendRequest](api_reference.md#sendrequest).
+- **Modify Index**: a session maintain the modify index to keep track of all changes to the session. Whenever you make a change to the session (state or key-value data), this modify index will be incremented. You can use this modify index when you need to perform atomic operations (such as "compare-and-swap"). (See [SessionUpdate](api_reference.md#sessionupdate).)
 
+## Message Pulling vs. Webhook Pushes
 
-### Message Pulling vs. Webhook Pushes
+When using Coldbrew Bots, you *pull* the messages, whereas the Facebook Messenger Platform "pushes" the messages to your webhook endpoints. Both approaches have pros and cons, but, our pulling model has the following advantages:
 
-In Coldbrew Bots API, you "pull" the messages, whereas the Facebook Messenger Platform "pushes" the messages to your webhook endpoints. Both have pros and cons, but, the pulling model has the following advantages:
+1. It simplifies the local bot development setup. You don't need the network tunneling tools (such as [ngrok](https://ngrok.com/)) because your bot application will not receive incoming Webhook calls directly. Instead Coldbrew Bots API will handle the incoming Webhook calls and store them in Coldbrew Bots so you can pull those messages whenever you can.
 
-1. It makes local bot app development simpler. you don't need the network tunneling tools (such as [ngrok](https://ngrok.com/)) because your bot applicaiton does not receive incoming webhook calls directly. Coldbrew Bots API will receive and store the webhook calls so your bot app can retrieve (pull) the messages later.
-
-2. You bot app does not have to be a web server accepting HTTP requests. It makes the bot code and deployment structure much simpler. e.g. no inbound connections, no need for load balancers.
+2. You bot application does not have to be a web server accepting HTTP requests _(unless you have real needs)_. This can simplify your bot code, deployment structure, and, security configurations. No inbounds connections, no need for load balancer(s), etc.
 
 [apibotlink]: https://www.messenger.com/t/260871171047071

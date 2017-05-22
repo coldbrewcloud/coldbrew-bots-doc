@@ -1,14 +1,8 @@
-# Coldbrew Bots API
+# API Reference
 
 ## Bots API
 
-```
-https://bots.coldbrewcloud.com/bots
-```
-
-**Authentication**
-
-All HTTP requests to `/bots/` endpoints must include API Token in the request header.
+**Authentication**: all HTTP requests to Bots API endpoints must include the API token in the request header.
 
 ```
 Authorization: Bearer <your_api_token>
@@ -41,6 +35,8 @@ Example request (curl):
 curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
     "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/messages"
 ```
+
+_NOTE: We'll be adding a new endpoint to support WebSocket-based message delivery. Coming soon._
 
 ### Send a Message
 
