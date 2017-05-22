@@ -14,6 +14,8 @@ All HTTP requests to `/bots/` endpoints must include API Token in the request he
 Authorization: Bearer <your_api_token>
 ```
 
+You can get your API token using [API Bot][apibotlink].
+
 ### Receive a Message
 
 ```
@@ -23,7 +25,7 @@ GET https://bots.coldbrewcloud.com/bots/{bot_id}/messages
 Parameters:
 
 - `bot_id`: bot ID
-- _(no HTTP request body)_
+- _(No HTTP request body)_
 
 HTTP Response:
 
@@ -48,7 +50,7 @@ POST https://bots.coldbrewcloud.com/bots/{bot_id}/messages
 
 Parameters:
 
-- `{bot_id}`: bot ID
+- `bot_id`: bot ID
 - HTTP request body: [SendRequest](#sendrequest)
 
 HTTP Response:
@@ -76,7 +78,7 @@ Parameters:
 
 - `bot_id`: bot ID
 - `user_id`: user ID. You normally get the user ID from `sender_id` of [ReceiveResponse](#receiveresponse).
-- _(no HTTP request body)_
+- _(No HTTP request body)_
 
 HTTP Response:
 
@@ -277,7 +279,7 @@ _(Facebook Messenger only)_ List content presents a set of items vertically.
 
 Example:
 
-![list](https://files.coldbrewcloud.com/7768d8438538499ca0beff9fcde084fb.png)
+<img src="https://files.coldbrewcloud.com/7768d8438538499ca0beff9fcde084fb.png" width="400">
 
 #### SendableListElement
 
@@ -336,7 +338,7 @@ _(Facebook Messenger only)_ Menu content can be used to send a horizontal scroll
 
 Example:
 
-![menu](https://files.coldbrewcloud.com/74a72d398896415d82a24c948eda7b30.PNG)
+<img src="https://files.coldbrewcloud.com/74a72d398896415d82a24c948eda7b30.PNG" width="300">
 
 #### SendableMenuElement
 
@@ -400,7 +402,7 @@ Example:
 
 Example:
 
-![quickreply](https://files.coldbrewcloud.com/66c98bbe49d74ac8b1b4fcc09a37793c.PNG)
+<img src="https://files.coldbrewcloud.com/66c98bbe49d74ac8b1b4fcc09a37793c.PNG" width="300">
 
 ### SessionUpdate
 
@@ -473,3 +475,5 @@ See [Sessions](home.md#sessions) for more information.
 - `locale`: user's locale
 - `timezone`: time zone (number relative to GMT)
 - `gender`: gender
+
+[apibotlink]: https://www.messenger.com/t/260871171047071
