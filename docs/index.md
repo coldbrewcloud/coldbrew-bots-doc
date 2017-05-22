@@ -23,7 +23,7 @@ With [API Bot][apibotlink], you can do things like this:
 - Take interactive tutorials
 - Send feedback to us
 
-<img src="https://files.coldbrewcloud.com/9feb52fba21e4388970d7d293e21aca2.PNG" width="200">
+<img src="https://git.io/vHT7X" width="200">
 
 [Try It Now!][apibotlink] _(Best viewed in Messenger mobile app)_
 

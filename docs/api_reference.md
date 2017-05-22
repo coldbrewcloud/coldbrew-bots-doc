@@ -275,7 +275,7 @@ _(Facebook Messenger only)_ List content presents a set of items vertically.
 
 Example:
 
-<img src="https://files.coldbrewcloud.com/7768d8438538499ca0beff9fcde084fb.png" width="400">
+<img src="https://git.io/vHT7Q" width="400">
 
 #### SendableListElement
 
@@ -334,7 +334,7 @@ _(Facebook Messenger only)_ Menu content can be used to send a horizontal scroll
 
 Example:
 
-<img src="https://files.coldbrewcloud.com/74a72d398896415d82a24c948eda7b30.PNG" width="300">
+<img src="https://git.io/vHT7d" width="300">
 
 #### SendableMenuElement
 
@@ -398,7 +398,7 @@ Example:
 
 Example:
 
-<img src="https://files.coldbrewcloud.com/66c98bbe49d74ac8b1b4fcc09a37793c.PNG" width="300">
+<img src="https://git.io/vHT7N" width="300">
 
 ### SessionUpdate
 
