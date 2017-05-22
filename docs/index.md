@@ -1,6 +1,6 @@
 # Coldbrew Bots
 
-...
+Coldbrew Bots is a chat bot development platform.
 
 ## Features
 
