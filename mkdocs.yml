@@ -1,5 +1,5 @@
 site_name: Coldbrew Bots
 pages:
-    - Home: home.md
+    - Home: index.md
     - About: about.md
 theme: readthedocs
