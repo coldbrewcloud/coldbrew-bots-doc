@@ -1,5 +1,6 @@
 site_name: Coldbrew Bots
 pages:
     - Home: index.md
+    - API Reference: api_reference.md
     - About: about.md
 theme: readthedocs

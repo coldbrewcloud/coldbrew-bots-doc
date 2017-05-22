@@ -18,7 +18,7 @@ curl -H "Authorization: Bearer <your_api_token>" "https://bots.coldbrewcloud.com
 
 And this endpoint will return either a message (see `ReceiveResponse` model in [API Reference](https://swagger.coldbrewcloud.com/index.html?url=/specs/bots/api.yaml)) or `404 Not Found` status if there's no message received.
 
-### Sessions
+## Sessions
 
 All messages received/sent via Coldbrew Bots API will have a session ID. Your bot will most likely interact with multiple end users at the same time. The concept of session lets you easily maintain isolated conversational status with different end users (or group of end users).
 
@@ -29,6 +29,8 @@ Each session will include these data attributes:
 - Key-Value Storage: you can use session KV store to store information (e.g. answers to questions)
 - Modify Index: whenever you modify the session, this index will increment. And you can use this modify to perform compare-and-swap operations. But that's optional.
 
+## More
+
 ### Message Pulling vs. Webhook Pushes
 
 In Coldbrew Bots API, you "pull" the messages, whereas the Facebook Messenger Platform "pushes" the messages to your webhook endpoints. Both have pros and cons, but, the pulling model has the following advantages:
@@ -36,4 +38,3 @@ In Coldbrew Bots API, you "pull" the messages, whereas the Facebook Messenger Pl
 1. It makes local bot app development simpler. you don't need the network tunneling tools (such as [ngrok](https://ngrok.com/)) because your bot applicaiton does not receive incoming webhook calls directly. Coldbrew Bots API will receive and store the webhook calls so your bot app can retrieve (pull) the messages later.
 
 2. You bot app does not have to be a web server accepting HTTP requests. It makes the bot code and deployment structure much simpler. e.g. no inbound connections, no need for load balancers.
-
