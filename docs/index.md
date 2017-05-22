@@ -1,6 +1,6 @@
 # Coldbrew Bots
 
-... 
+...
 
 ## Features
 
@@ -20,7 +20,6 @@ With [API Bot][apibotlink], you can do things like this:
 - Create and manage your bots
 - Manage your API tokens
 - Access Bot Store _(coming soon)_
-- Take interactive tutorials
 - Send feedback to us
 
 <img src="https://git.io/vHT7X" width="200">
@@ -31,15 +30,11 @@ _NOTE: Actually you will have to use our API Bot no matter what, because we didn
 
 ## Getting Started
 
-We recommend you to try the tutorial using [API Bot][apibotlink], but, this is the typical steps to get started:
+See [Facebook Messenger Setup](bot_fm_setup.md) to create and configure a new bot for the Facebook Messenger.
 
-1. Create a new Coldbrew Bots bot using [API Bot][apibotlink].
-2. Configure your Facebook App to connect the bot (e.g. Webhooks, Page Access Token).
-3. Start receiving and sending messages via [Coldbrew Bots REST API](api_reference.md).
+## Core Concepts
 
-See [API Reference](api_reference.md) for more information.
-
-## Sessions
+### Sessions
 
 Your bot is supposed to interact with multiple end users _(or multiple groups of users)_ simultaneously. And, from the end user's perspective, they expect their conversation with the bot is completely private and isolated from other conversations of the bot.
 
@@ -54,7 +49,7 @@ Each session has the following attributes:
 - **Key-Value Storage**: you can store multiple string-based key value pairs in the session. All data in the session storage is private and permanent _(unless you delete them)_. Session data can be updated or deleted using [SessionUpdate](api_reference.md#sessionupdate) in [SendRequest](api_reference.md#sendrequest).
 - **Modify Index**: a session maintain the modify index to keep track of all changes to the session. Whenever you make a change to the session (state or key-value data), this modify index will be incremented. You can use this modify index when you need to perform atomic operations (such as "compare-and-swap"). (See [SessionUpdate](api_reference.md#sessionupdate).)
 
-## Message Pulling vs. Webhook Pushes
+### Message Pulling vs. Webhook Pushes
 
 When using Coldbrew Bots, you *pull* the messages, whereas the Facebook Messenger Platform "pushes" the messages to your webhook endpoints. Both approaches have pros and cons, but, our pulling model has the following advantages:
 

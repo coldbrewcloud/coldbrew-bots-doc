@@ -1,6 +1,6 @@
 # Facebook Messenger Setup
 
-If you have created a new bot for Facebook Messenger, you must configure your Facebook App and Page so that Coldbrew Bots API can properly connect to Messenger Platform and send/receive messages for your app.
+To create a bot for Facebook Messenger, you need to configure your Facebook App and Page so that Coldbrew Bots API can properly connect to Messenger Platform and send/receive messages for your app.
 
 ## Step 1. Create Bot
 
