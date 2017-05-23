@@ -522,4 +522,4 @@ See [Sessions](index.md#sessions) for more information.
 - `timezone`: time zone (number relative to GMT)
 - `gender`: gender
 
-[apibotlink]: https://www.messenger.com/t/260871171047071
+[apibotlink]: https://m.me/coldbrewbots

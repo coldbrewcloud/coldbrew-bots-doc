@@ -59,4 +59,4 @@ When using Coldbrew Bots, you *pull* the messages, whereas the Facebook Messenge
 
 **IMPORTANT**: But, we do have rate limits on our API endpoints. See [Rate Limiting](api_reference.md#rate-limiting) for more informations.
 
-[apibotlink]: https://www.messenger.com/t/260871171047071
+[apibotlink]: https://m.me/coldbrewbots

@@ -66,6 +66,6 @@ Once subscribed successfully, it will look like this:
 
 And, that's it. Now your bot is properly configured and connected to receive and send messages through [Coldbrew Bots API](api_reference.md). You can
 
-[apibotlink]: https://www.messenger.com/t/260871171047071
+[apibotlink]: https://m.me/coldbrewbots
 [createfbpage]: https://www.facebook.com/pages/create/
 [createfbapp]: https://developers.facebook.com/apps/
