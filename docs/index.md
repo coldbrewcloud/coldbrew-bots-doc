@@ -57,4 +57,6 @@ When using Coldbrew Bots, you *pull* the messages, whereas the Facebook Messenge
 
 2. You bot application does not have to be a web server accepting HTTP requests _(unless you have real needs)_. This can simplify your bot code, deployment structure, and, security configurations. No inbounds connections, no need for load balancer(s), etc.
 
+**IMPORTANT**: But, we do have rate limits on our API endpoints. See [Rate Limiting](api_reference.md#rate-limiting) for more informations.
+
 [apibotlink]: https://www.messenger.com/t/260871171047071

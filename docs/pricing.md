@@ -3,6 +3,7 @@
 ## Free Tier
 
 - Create up to 2 bots per account
+- API rate limit: up to 1200 calls per minute
 - [Flow Engine](flow.md)
 - [wit.ai](https://wit.ai/) integration
 - Session storage _(~ 1MB per account)_

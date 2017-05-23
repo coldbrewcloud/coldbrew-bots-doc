@@ -2,7 +2,9 @@
 
 ## Bots API
 
-**Authentication**: all HTTP requests to Bots API endpoints must include the API token in the request header.
+#### Authentication
+
+All HTTP requests to Bots API endpoints must include the API token in the request header.
 
 ```
 Authorization: Bearer <your_api_token>
@@ -10,11 +12,26 @@ Authorization: Bearer <your_api_token>
 
 You can get your API token using [API Bot][apibotlink].
 
-### Receive a Message
+#### Rate Limiting
+
+For requests to Bots API endpoints, you can make up to 1200 calls per minute. That is 20 calls per second. You can see your current rate limit status by checking the following HTTP response headers:
+
+- `X-RateLimit-Duration-Sec`: rate limiting time window in seconds. It's currently set to `60`.
+- `X-RateLimit-Limit`: the maximum number of calls you can make. It's currently set to `1200` for Free tier users.
+- `X-RateLimit-Remaining`: the number of requests remaining in the current rate limit window.
+- `X-RateLimit-Reset`: the time at which the current rate limit window resets in UTC epoch seconds.
+
+And, if you exceed the rate limits, the endpoint will fail with the HTTP status code of `429`.
+
+### Receive Messages
 
 ```
 GET https://bots.coldbrewcloud.com/bots/{bot_id}/messages
 ```
+
+This endpoint will return an array of messages that your bot had received. Currently the API will return up to 20 messages at a time.
+
+**IMPORTANT**: Please be careful not to exceed the API rate limit. To be most responsive to the end users, it's important for your Bot to check the messages as fast as possible, but, you still need to balance between receive calls and send calls if you're expecting lots of messages. If not, most of time, the receive calls will get `404 Not Found`, and, it's probably a good idea to put slightly longer delay before making the next call.
 
 Parameters:
 
@@ -27,6 +44,7 @@ HTTP Response:
 - `404`: no messages received
 - `400`: invalid bot ID
 - `403`: permission error (most likely authorization issue)
+- `429`: API rate limit exceeded
 - `500`: other server side errors
 
 Example request (curl):
@@ -35,8 +53,6 @@ Example request (curl):
 curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
     "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/messages"
 ```
-
-_NOTE: We'll be adding a new endpoint to support WebSocket-based message delivery. Coming soon._
 
 ### Send a Message
 
@@ -54,6 +70,7 @@ HTTP Response:
 - `200`: message was sent successfully
 - `400`: invalid bot or session ID
 - `403`: permission error (most likely authorization issue)
+- `429`: API rate limit exceeded
 - `500`: other server side errors
 
 Example request (curl):
@@ -73,7 +90,7 @@ GET https://bots.coldbrewcloud.com/bots/{bot_id}/users/{user_id}
 Parameters:
 
 - `bot_id`: bot ID
-- `user_id`: user ID. You normally get the user ID from `sender_id` of [ReceiveResponse](#receiveresponse).
+- `user_id`: user ID. You normally get the user ID from `sender_id` of [ReceivedMessage](#receivedmessage).
 - _(No HTTP request body)_
 
 HTTP Response:
@@ -82,6 +99,7 @@ HTTP Response:
 - `404`: no user found
 - `400`: invalid bot ID
 - `403`: permission error (most likely authorization issue)
+- `429`: API rate limit exceeded
 - `500`: other server side errors
 
 Example request (curl):
@@ -94,6 +112,36 @@ curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
 ## Data Models
 
 ### ReceiveResponse
+
+```json
+{
+    "messages": [
+        {
+            "sender_id": "fm-1558084600893191",
+            "seq": 317,
+            "contents": [
+                {
+                    "text": {
+                        "text":"hello, world!"
+                    }
+                }
+            ],
+            "received_at": "2017-05-21T17:49:22.401-07:00",
+            "session_id": "841ba10b12d24427aa3b96ebb3a2ba9d",
+            "session_state": "main_menu",
+            "session_kv": {
+                "key1": "value1",
+                "key2":"value2"
+            },
+            "session_modify_index": 311
+        }        
+    ]
+}
+```
+
+- `messages`: an array of [ReceivedMessage](#receivedmessage)
+
+### ReceivedMessage
 
 ```json
 {
@@ -116,6 +164,7 @@ curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
     "session_modify_index": 311
 }
 ```
+
 - `sender_id`: user ID of message sender
 - `seq`: sequential order index in session
 - `contents`: an array of [ReceivableContent](#receivablecontent)
@@ -125,9 +174,10 @@ curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
 - `session_kv`: session key-value storage (string dictionary) (see [Sessions](index.md#sessions))
 - `session_modify_index`: the current modify index of the session (see [Sessions](index.md#sessions))
 
+
 ### ReceivableContent
 
-Supported receivable content types: [TextContent](#textcontent), [MediaContent](#mediacontent), [EventContent](#eventcontent).
+Supported receivable content types: [TextContent](#textcontent), [MediaContent](#mediacontent), [ActionContent](#actioncontent).
 
 #### TextContent
 
@@ -157,7 +207,7 @@ Supported receivable content types: [TextContent](#textcontent), [MediaContent](
     - `4`: file
 - `url`: URL of the media
 
-#### EventContent
+#### ActionContent
 
 ```json
 {
@@ -166,7 +216,7 @@ Supported receivable content types: [TextContent](#textcontent), [MediaContent](
 }
 ```
 
-- `type`: event type
+- `type`: action type
     - `"messenger_get_started"`: _(Facebook Messenger only)_ the end user clicked "Get Started" button
     - `"messenger_postback"`: _(Facebook Messenger only)_ received a postback
 
@@ -190,7 +240,7 @@ Supported receivable content types: [TextContent](#textcontent), [MediaContent](
 }
 ```
 
-- `session_id`: you must set the same `session_id` value from [ReceiveResponse](#receiveresponse).
+- `session_id`: you must set the same `session_id` value from [ReceivedMessage](#receivedmessage).
 - `contents`: an array of [SendableContent](#sendablecontent)
 - `session_update`: _(optional)_ if set, Coldbrew Bots API will update the session state, key-value storage while processing the send request. (See [SessionUpdate](#sessionupdate))
 
