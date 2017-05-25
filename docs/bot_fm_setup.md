@@ -6,8 +6,7 @@ To create a bot for Facebook Messenger, you need to configure your Facebook App 
 
 Open [API Bot][apibotlink], and, find "Create Bot" button in "Manage Bots" menu.
 
-<img src="https://git.io/vHIkP" width="200">
-<img src="https://git.io/vHIkj" width="200">
+<img src="https://git.io/vHOzb" width="250">
 
 Enter the name of your bot, and, you will see your new bot in the "Manage Bots" menu. _(Try swipe to the right if you don't see it.)_
 
@@ -28,7 +27,7 @@ Find the "Token Generation" sectionin "Messenger" product menu, and, select your
 
 You need to set the Page Access Token for your bot using [API Bot][apibotlink]. Click "Page Access Token" button of the bot you created, and, enter the Page Access Token.
 
-<img src="https://git.io/vHIt1" width="200">
+<img src="https://git.io/vHOzG" width="250">
 
 ## Step 4. Configure Webhooks
 
@@ -44,9 +43,9 @@ _(If this is your first time configuring webhooks, you will see "Callback URL" a
 - Verify Token: `{your bot verify token}`
 - Subscription Fields: check "messages" and "messaging_postbacks" options
 
-To view your bot's Webhook setup information, go back to [API Bot][apibotlink] again, then find "Webhook Setup Info" button in "Manage Bots" menu.
+To view your bot's Webhook setup information, go back to [API Bot][apibotlink] again, then find "Bot Info" button in "Manage Bots" menu.
 
-<img src="https://git.io/vHItr" width="200">
+<img src="https://git.io/vHOzq" width="250">
 
 After entering those input fields, make sure to click "Verify and Save" button in the dialog.
 
