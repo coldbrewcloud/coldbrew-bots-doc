@@ -23,10 +23,23 @@ For requests to Bots API endpoints, you can make up to 1200 calls per minute. Th
 
 And, if you exceed the rate limits, the endpoint will fail with the HTTP status code of `429`.
 
+#### Message Queue Session Locking
+
+When the client tries to retrieve messages using [Receive Messages](#receive-messages) endpoint, the Coldbrew Bots API will send as many messages as possible, but, it includes only one message per session. The client can continue to retrieve messages, but, the next message from the same session will be available after the client sends back the sending message(s) of the session. This feature is called Message Queue Session Locking and is enabled by default.
+
+Why does it hold the messages and send a message per session? That is purely to help the client to process incoming messages sequentially (in the order of receipt) and to simplify the session state management in the client side. Without this feature, the client needs to make sure that it processes the incoming messages sequentially to avoid the conflicting session states _(which is very difficult to debug later)_.
+
+If your application does not really care about the order of messages, or, if your application can handle the concurrent messages properly _(likey using `seq` field)_, you can simply disable this feature by including `nolock=1` query of your requests.
+
+**IMPORTANT**: Unless you're 100% sure about your use case, we recommend not to disable this feature. Session locking greatly improves the consistency and predictability of your bot application.
+
+As a safe measure, the API will automatically unlock the holding sessions after 5 seconds if it does not receive any outgoing (sending) messages with the same session ID, meaning you will receive another message from the same session about 5 seconds later even if you don't send any messages to that session.
+
 ### Receive Messages
 
 ```
 GET https://bots.coldbrewcloud.com/bots/{bot_id}/messages
+GET https://bots.coldbrewcloud.com/bots/{bot_id}/messages?nolock=1
 ```
 
 This endpoint will return an array of messages that your bot had received. Currently the API will return up to 20 messages at a time.
@@ -36,6 +49,7 @@ This endpoint will return an array of messages that your bot had received. Curre
 Parameters:
 
 - `bot_id`: bot ID
+- `nolock=1`: you can disable the [session locking](#message-queue-session-locking) feature by including `nolock=1` in your request query. Otherwise the feature is always enabled by default.
 - _(No HTTP request body)_
 
 HTTP Response:
