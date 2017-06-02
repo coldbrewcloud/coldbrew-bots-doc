@@ -95,6 +95,37 @@ curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
     "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/messages"
 ```
 
+### Push Messages
+
+```
+POST https://bots.coldbrewcloud.com/bots/{bot_id}/push
+```
+
+This endpoint lets you send the message to multiple users at once. Once the request is validated, the actual message send will be executed asynchronously. You will get `200 OK` response immediately but the API will start sending messages to the users (identified by their session IDs).
+
+**IMPORTANT**: Currently there are additional limits on this push endpoint. One can send messages up to 1000 users at once, and, you can invoke this push request up to 6 times per hour.
+
+Parameters:
+
+- `bot_id`: bot ID
+- HTTP request body: [PushRequest](#pushrequest)
+
+HTTP Response:
+
+- `200`: message was sent successfully
+- `400`: invalid bot, empty contents, empty session IDs, or, duplicate session IDs
+- `403`: permission error (most likely authorization issue)
+- `429`: API rate limit exceeded
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    -XPOST -d '{"session_ids": ["841ba10b12d24427aa3b96ebb3a2ba9d", "27d4f5f2359a4b3891e595b9691036e1"],"contents": [{"text": "hello there!"}]}' \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/push"
+```
+
 ### Get User Profile
 
 ```
@@ -501,6 +532,26 @@ See [Sessions](index.md#sessions) for more information.
 ```
 
 - `send_result`: an array of [OperationResult](#operationresult), each element represents the send operation result of corresponding [SendableContent](#sendablecontent) in [SendRequest](#sendrequest) in the same order.
+
+### PushRequest
+
+```json
+{
+    "session_ids": [
+        "841ba10b12d24427aa3b96ebb3a2ba9d",
+        "c533e179af87423f8bf70c829d0d9342",
+        "27d4f5f2359a4b3891e595b9691036e1"
+    ],
+    "contents": [
+        {
+            "text": "hello there!"
+        },
+    ],
+}
+```
+
+- `session_ids`: an array of session IDs
+- `contents`: an array of [SendableContent](#sendablecontent)
 
 ### OperationResult
 
