@@ -126,6 +126,122 @@ curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
     "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/push"
 ```
 
+
+### Bot Storage
+
+Bot Storage is a key-value store that you can use to store the bot-level data. This is very similar to the session key-value storage except that this is bot-wide storage while the session storage is maintained at each individual session level.
+
+#### Get All Keys
+
+```
+GET https://bots.coldbrewcloud.com/bots/{bot_id}/kv
+```
+
+Parameters:
+
+- `bot_id`: bot ID
+
+HTTP Response:
+
+- `200`: returns an array of strings that contains the key names (e.g. `["key1", "key2", "key3"]`)
+- `400`: invalid bot, empty contents, empty session IDs, or, duplicate session IDs
+- `403`: permission error (most likely authorization issue)
+- `429`: API rate limit exceeded
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/kv"
+```
+
+#### Get a Key-Value
+
+```
+GET https://bots.coldbrewcloud.com/bots/{bot_id}/kv/{key}
+```
+
+Parameters:
+
+- `bot_id`: bot ID
+- `key`: key name
+
+HTTP Response:
+
+- `200`: returns the value in the response body
+- `400`: invalid bot, empty contents, empty session IDs, or, duplicate session IDs
+- `403`: permission error (most likely authorization issue)
+- `404`: key not found
+- `429`: API rate limit exceeded
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/kv/key1"
+```
+
+#### Set a Key-Value
+
+```
+PUT https://bots.coldbrewcloud.com/bots/{bot_id}/kv/{key}
+```
+
+Parameters:
+
+- `bot_id`: bot ID
+- `key`: key name
+- `X-Bot-KV-Modify-Index` _(Header)_: Optional HTTP header param. If you specify the modify index, the SET operation will be executed only if the current modify index is the same as this value. Otherwise it will return `409` error status. If you don't specify the modify index, the SET operation will be always executed (possibly overwriting other concurrent writes).
+- HTTP request body: plain string value for the key
+
+HTTP Response:
+
+- `200`: a key-value pair was successfully created or updated
+- `400`: invalid bot, empty contents, empty session IDs, or, duplicate session IDs
+- `403`: permission error (most likely authorization issue)
+- `409`: modify index conflict
+- `429`: API rate limit exceeded
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    -XPUT -d 'value' \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/kv/key1"
+```
+
+#### Delete a Key-Value
+
+```
+DELETE https://bots.coldbrewcloud.com/bots/{bot_id}/kv/{key}
+```
+
+Parameters:
+
+- `bot_id`: bot ID
+- `key`: key name
+- `X-Bot-KV-Modify-Index` _(Header)_: Optional HTTP header param. If you specify the modify index, the DELETE operation will be executed only if the current modify index is the same as this value. Otherwise it will return `409` error status. If you don't specify the modify index, the DELETE operation will be always executed (possibly overwriting other concurrent writes).
+
+HTTP Response:
+
+- `200`: a key-value pair was successfully deleted
+- `400`: invalid bot, empty contents, empty session IDs, or, duplicate session IDs
+- `403`: permission error (most likely authorization issue)
+- `409`: modify index conflict
+- `429`: API rate limit exceeded
+- `500`: other server side errors
+
+Example request (curl):
+
+```bash
+curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
+    -XDELETE \
+    "https://bots.coldbrewcloud.com/bots/3314b5adb4914a7e97be78c2b66e26c8/kv/key1"
+```
+
 ### Get User Profile
 
 ```
