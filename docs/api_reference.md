@@ -105,6 +105,8 @@ This endpoint lets you send the message to multiple users at once. Once the requ
 
 **IMPORTANT**: Currently there are additional limits on this push endpoint. One can send messages up to 1000 users at once, and, you can invoke this push request up to 6 times per hour.
 
+**IMPORTANT**: To push messages to the end user who haven't talked to your bot more than 24 hours, you will need an approval for `pages_messaging_subscriptions` permission.
+
 Parameters:
 
 - `bot_id`: bot ID
@@ -338,7 +340,7 @@ curl -H "Authorization: Bearer 7d63da3eb2944e969eae3d9d5b036c1c" \
 
 ### ReceivableContent
 
-Supported receivable content types: [TextContent](#textcontent), [MediaContent](#mediacontent), [ActionContent](#actioncontent).
+Supported receivable content types: [TextContent](#textcontent), [MediaContent](#mediacontent), [ActionContent](#actioncontent), [PaymentContent](#paymentcontent), and, [ReferralContent](#referralcontent).
 
 #### TextContent
 
@@ -380,6 +382,119 @@ Supported receivable content types: [TextContent](#textcontent), [MediaContent](
 - `type`: action type
     - `"messenger_get_started"`: _(Facebook Messenger only)_ the end user clicked "Get Started" button
     - `"messenger_postback"`: _(Facebook Messenger only)_ received a postback
+
+#### PaymentShippingAddress
+
+```json
+{
+    "street_1": "1 Hacker Way",
+    "street_2": "",
+    "city": "MENLO PARK",
+    "state": "CA",
+    "country": "US",
+    "postal_code": "94025"
+}
+```
+
+#### PaymentRequestedUserInfo
+
+```json
+{
+    "shipping_address": {
+        "street_1": "1 Hacker Way",
+        "street_2": "",
+        "city": "MENLO PARK",
+        "state": "CA",
+        "country": "US",
+        "postal_code": "94025"
+    },
+    "contact_name": "Peter Chang",
+    "contact_email": "peter@anemailprovider.com",
+    "contact_phone": "+15105551234"
+}
+```
+
+#### PaymentCredential
+
+```json
+{
+    "provider_type": "stripe",
+    "charge_id": "ch_18tmdBEoNIH3FPJHa60ep123",
+    "fb_payment_id": "123456789"
+}
+```
+
+- `provider_type`: payment provider; either `"stripe"` or `"paypal"`
+- `charge_id`: provider charge ID
+- `fb_payment_id`: a Facebook issued payment ID
+
+#### PaymentAmount
+
+```json
+{
+    "currency": "USD",
+    "amount": "2.99"
+}
+```
+
+- `currency`: payment currency
+- `amount`: payment amount
+
+#### PaymentContent
+
+```json
+{
+    "payload": "user_payload",
+    "requested_user_info": {
+        "shipping_address": {
+            "street_1": "1 Hacker Way",
+            "street_2": "",
+            "city": "MENLO PARK",
+            "state": "CA",
+            "country": "US",
+            "postal_code": "94025"
+        },
+        "contact_name": "Peter Chang",
+        "contact_email": "peter@anemailprovider.com",
+        "contact_phone": "+15105551234"
+    },
+    "payment_credential": {
+        "provider_type": "stripe",
+        "charge_id": "ch_18tmdBEoNIH3FPJHa60ep123",
+        "fb_payment_id": "123456789"
+    },
+    "amount": {
+        "currency": "USD",
+        "amount": "2.99"
+    }
+}
+```
+
+- `payload`: meta data defined in Buy button as payload
+- `requested_user_info`: information that was requested from the user by the Buy button. See [PaymentRequestedUserInfo](#paymentrequesteduserinfo)
+- `payment_credential`: payment credentials. See [PaymentCredential](#paymentcredential).
+- `amount`: total amount of transaction. See [PaymentAmount](#paymentamount).
+
+#### ReferralContent
+
+```json
+{
+    "ref": "user defined referral payload",
+    "source": 1,
+    "type": 1,
+    "first_time_use": true
+}
+```
+
+- `ref`: user defined referral payload
+- `source`: referral source
+    - `1`: m.me short link
+    - `2`: Ads
+- `type`: referral type
+    - `1`: m.me short link open thread
+- `first_time_use`: whether the referral was included in Facebook Messenger Get Started event
+
+See [here](https://developers.facebook.com/docs/messenger-platform/referral-params) for more detail.
 
 ### SendRequest
 
@@ -576,13 +691,52 @@ Example:
 - `element_url`: _(optional)_ end user will open this URL when clicking the element itself (not the button).
 - `buttons`: an array of [SendableButton](#sendablebutton)
 
+#### PaymentSummary
+
+<img src="https://scontent-lax3-1.xx.fbcdn.net/v/t39.2365-6/14130025_327619210923721_919324010_n.png?oh=3919e8ea28666d2038994c5735c89786&oe=59DFD8F3" width="600">
+
+```json
+{
+    "currency": "USD",
+    "is_test_payment": true,
+    "payment_type": 0,
+    "merchant_name": "Coldbrew Cloud",
+    "requested_user_info": ["contact_name", "contact_email"],
+    "price_list": [
+        {
+            "label": "Item #1",
+            "amount": "2.99"
+        },
+    ]
+}
+```
+
+- `currency`: payment currency
+- `is_test_payment`: if this is test payment
+- `payment_type`:
+    - `0`: fixed amount payment
+    - `1`: flexible amount payment
+- `merchant_name`: merchant name
+- `requested_user_info`: an array of requested user informations
+    - `"contact_name"`: name
+    - `"contact_phone"`: phone number
+    - `"contact_email"`: email address
+    - `"shipping_address"`: shipping address
+- `price_list`: an array of each individual items
+    - `label`: item label
+    - `amount`: item price
+
+See [here](https://developers.facebook.com/docs/messenger-platform/send-api-reference/buy-button) for more details.
+
 #### SendableButton
 
 ```json
 {
     "type": 2,
     "title": "Cancel",
-    "payload": "do_cancel"
+    "payload": "do_cancel",
+    "share_contents": {},
+    "payment_summary": {}
 }
 ```
 
@@ -590,8 +744,11 @@ Example:
     - `1`: URL link
     - `2`: _(Facebook Messenger only)_ Messenger postback
     - `3`: _(Facebook Messenger only)_ Share
+    - `4`: _(Facebook Messenger only)_ Buy (payment) button
 - `title`: text shown on the button
 - `payload`: _(Facebook Messenger only)_ _(optional)_ postback payload data (if `type` is `2`)
+- `share_contents`: _(Facebook Messenger only)_ _(optional)_ sharing contents for Share button. [SendableMenuContent](#sendablemenucontent) type supported.
+- `payment_summary`: _(Facebook Messenger only)_ _(optional)_ payment configuration. See [PaymentSummary](#paymentsummary).
 
 #### SendableQuickReply
 
